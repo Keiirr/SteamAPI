@@ -1,0 +1,185 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<h2 id="pageTitle">Blackjack - Solos</h2>
+
+<div class="row">
+    <div class="container-fluid" id="dealerContainer">
+        <div class="userprofile">
+            <span class="profile"></span>
+            <div class="userdescription">
+                <h2 class="username"></h2>
+                <h2 class="totalKills"></h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="container-fluid" id="centerContainer">
+
+    </div>
+</div>
+
+<div class="container-fluid h-100" id="playerContainer">
+    <div class="row h-100 justify-content-center align-items-center">
+        <button type="button" class="btn btn-default-outline btn-circle"><span>$1</span></button>
+        <button type="button" class="btn btn-default-outline btn-circle"><span>$5</span></button>
+        <button type="button" class="btn btn-primary-outline btn-circle"><span>$10</span></button>
+        <button type="button" class="btn btn-primary-outline btn-circle"><span>$25</span></button>
+        <button type="button" class="btn btn-success-outline btn-circle"><span>$50</span></button>
+        <button type="button" class="btn btn-info-outline btn-circle"><span>$100</span></button>
+    </div>
+</div>
+
+<style>
+    #pageTitle {
+        margin-top: 5%;
+        align-content: center;
+        text-align: center;
+    }
+
+    #playerContainer {
+    }
+
+    .btn-circle {
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        padding: 12px 0;
+        font-size: 16px;
+        line-height: 1.428571429;
+        border-radius: 30px;
+        margin: 15px;
+    }
+
+        .btn-circle:nth-child(1) {
+            border-color: white;
+        }
+
+            .btn-circle:nth-child(1):hover {
+                -webkit-box-shadow: 0px 0px 10px 0px whitesmoke;
+                -moz-box-shadow: 0px 0px 10px 0px whitesmoke;
+                box-shadow: 0px 0px 10px 0px whitesmoke;
+            }
+
+                .btn-circle:nth-child(1):hover span {
+                }
+
+        .btn-circle:nth-child(2) {
+            border-color: darkred;
+        }
+
+            .btn-circle:nth-child(2):hover {
+                -webkit-box-shadow: 0px 0px 10px 0px darkred;
+                -moz-box-shadow: 0px 0px 10px 0px darkred;
+                box-shadow: 0px 0px 10px 0px darkred;
+            }
+
+        .btn-circle:nth-child(3) {
+            border-color: royalblue;
+        }
+
+            .btn-circle:nth-child(3):hover {
+                -webkit-box-shadow: 0px 0px 10px 0px royalblue;
+                -moz-box-shadow: 0px 0px 10px 0px royalblue;
+                box-shadow: 0px 0px 10px 0px royalblue;
+            }
+
+        .btn-circle:nth-child(4) {
+            border-color: forestgreen;
+        }
+
+            .btn-circle:nth-child(4):hover {
+                -webkit-box-shadow: 0px 0px 10px 0px forestgreen;
+                -moz-box-shadow: 0px 0px 10px 0px forestgreen;
+                box-shadow: 0px 0px 10px 0px forestgreen;
+            }
+
+        .btn-circle:nth-child(5) {
+            border-color: yellow;
+        }
+
+            .btn-circle:nth-child(5):hover {
+                -webkit-box-shadow: 0px 0px 10px 0px yellow;
+                -moz-box-shadow: 0px 0px 10px 0px yellow;
+                box-shadow: 0px 0px 10px 0px yellow;
+            }
+
+        .btn-circle:nth-child(6) {
+            border-color: black;
+        }
+
+            .btn-circle:nth-child(6):hover {
+                -webkit-box-shadow: 0px 0px 10px 0px black;
+                -moz-box-shadow: 0px 0px 10px 0px black;
+                box-shadow: 0px 0px 10px 0px black;
+            }
+
+        .btn-circle.btn-lg {
+            width: 50px;
+            height: 50px;
+            padding: 10px 16px;
+            font-size: 18px;
+            line-height: 1.33;
+            border-radius: 25px;
+        }
+
+        .btn-circle.btn-xl {
+            width: 70px;
+            height: 70px;
+            padding: 10px 16px;
+            font-size: 24px;
+            line-height: 1.33;
+            border-radius: 35px;
+        }
+</style>
+
+<script>
+    $(document).ready(function () {
+        GetProfileDetails();
+        CSGOStats();
+    });
+
+    function GetProfileDetails() {
+        $.ajax({
+            url: '/Steam/GetProfile',
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.response.players, function (key, value) {
+                    if ($('.profile')) {
+                        $('.profile').append("<img src='" + value.avatar + "'> <span>" + value.personaname + "</span>")
+                    }
+                    if ($('.username')) {
+                        $('.username').append(value.personaname)
+                    }
+                });
+            }, error: function (httpReq, status, exception) {
+                console.log(status + " " + exception);
+            }
+        });
+    }
+
+    function CSGOStats() {
+        $.ajax({
+            url: '/Steam/GetUserStatsForGame',
+            dataType: 'json',
+            success: function (data) {
+                var obj = data;
+                var statList = obj.playerstats.stats;
+                for (var i = 0; i < statList.length; i++) {
+                    var stat = statList[i];
+                    $('.totalKills').append('<b>'+ stat.name +'</b> ' + stat.value + '<br>');
+                }
+
+                }, error: function (httpReq, status, exception) {
+                    console.log(status + " " + exception);
+                }
+            });
+    }
+</script>
